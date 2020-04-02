@@ -1,32 +1,58 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <Header />
+    <router-view :items="todo" @addList="addList" @deleteList="deleteList" />
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+import Header from "@/components/header.vue";
+import axios from "axios";
+export default {
+  components: {
+    Header
+  },
+  data() {
+    return {
+      todo: []
+    };
+  },
+  methods: {
+    async getItems() {
+      try {
+        let result = await axios.get("http://localhost:3000/items");
+        this.todo = result.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async addList(newProduct) {
+      try {
+        await axios.post("http://localhost:3000/items", newProduct);
+        this.getItems();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async deleteList(id) {
+      try {
+        await axios.delete(`http://localhost:3000/items/${id}`, id);
+        this.getItems();
+      } catch (error) {
+        console.log(error);
+      }
     }
+  },
+  mounted() {
+    this.getItems();
   }
+};
+</script>
+
+<style lang="scss">
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 </style>
