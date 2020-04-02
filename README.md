@@ -1,4 +1,6 @@
-# todo
+# ToDo List
+
+A simple todo list I made in vue.js while practicing building a json server. It uses vue router too!
 
 ## Project setup
 ```
